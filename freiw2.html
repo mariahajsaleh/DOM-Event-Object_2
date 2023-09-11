@@ -1,0 +1,104 @@
+<!---------
+    Eine FARBE wird meistens mit der RGB-Format erstellt. DAS RGB 
+steht für ROT, GRÜN und BLAU. Jeder Farbcode ist ein Wert 
+zwischen 0 und 255.
+Wenn HTML-Elemente später per JavaScript-Code hinzugefügt 
+werden, dann ist das EreignisObjekt nicht sofort verfügbar. Der 
+Trick ist, du musst dem HTML-Element als Attribut das Ereignis
+mitgeben und es mit einer Funktion verbinden. Dann kannst du in 
+der angegeben Funktion eine Verbindung zum Objekt aufbauen 
+und dann das Ereignis nochmal mit addEventListener hinzufügen 
+und dort den EreignisObjekt abfangen.
+Beispiel HTML-Code:
+<button onclick = "klick(this)">Klick mich</button>
+Funktion „klick“:
+function klick(objekt)
+{
+objekt.addEventListener("click", (ereignisObjekt) => {
+console.log(ereignisObjekt.target.innerText);
+});
+}
+    -------->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+    // 1. MAIN-Element erstellen und in ein Grid mit vier Spalten setzen
+const main = document.createElement("main");
+main.style.display = "grid";
+main.style.gridTemplateColumns = "1fr 1fr 1fr 1fr";
+
+// 2. Verbindung zum MAIN-Element herstellen
+document.body.appendChild(main);
+
+// 3. Vier DIVs im MAIN-Element erstellen
+for (let i = 0; i < 4; i++) {
+    const div = document.createElement("div");
+    div.style.height = "256px";
+    div.style.width = "100px";
+    main.appendChild(div);
+}
+
+// 4. Erstes DIV mit roter Hintergrundfarbe
+main.children[0].style.backgroundColor = "red";
+
+// 5. Zweites DIV mit grüner Hintergrundfarbe
+main.children[1].style.backgroundColor = "green";
+
+// 6. Drittes DIV mit blauer Hintergrundfarbe
+main.children[2].style.backgroundColor = "blue";
+
+// 7. Viertes DIV ohne Hintergrundfarbe (initial)
+const div4 = main.children[3];
+
+// 8. Event-Handler für die ersten drei DIVs hinzufügen
+for (let i = 0; i < 3; i++) {
+    main.children[i].onmousedown = klickMoment;
+    main.children[i].onmousemove = function(event) {
+        bewegung(this, i, event);
+    };
+    main.children[i].onmouseup = losgelassen;
+}
+
+// 9. Status-Variable "mausAktion" erstellen und auf "false" setzen
+let mausAktion = false;
+
+// 10. Funktion "klickMoment" erstellen
+function klickMoment() {
+    mausAktion = true;
+}
+
+// 11. Funktion "losgelassen" erstellen
+function losgelassen() {
+    mausAktion = false;
+}
+
+// 12. Funktion "bewegung" erstellen
+function bewegung(div, nummer, event) {
+    if (mausAktion) {
+        let colorValue;
+        if (nummer === 0) {
+            colorValue = `rgb(${event.offsetY}, 0, 0)`;
+        } else if (nummer === 1) {
+            colorValue = `rgb(0, ${event.offsetY}, 0)`;
+        } else if (nummer === 2) {
+            colorValue = `rgb(0, 0, ${event.offsetY})`;
+        }
+        div.style.backgroundColor = colorValue;
+
+        // 14. Verbindung zum vierten DIV und Hintergrundfarbe aktualisieren
+        const div0 = parseInt(main.children[0].style.backgroundColor.match(/\d+/g)[0]);
+        const div1 = parseInt(main.children[1].style.backgroundColor.match(/\d+/g)[1]);
+        const div2 = parseInt(main.children[2].style.backgroundColor.match(/\d+/g)[2]);
+        div4.style.backgroundColor = `rgb(${div0}, ${div1}, ${div2})`;
+    }
+}
+</script>
+</html>
